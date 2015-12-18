@@ -1,0 +1,115 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title>EZproxy URL Checker</title>
+
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+	
+	<script type="text/javascript">
+		function tranformInput() 
+		{
+			<!--formInput grabs the user's input for processing.-->
+			var formInput = document.getElementById('userInput').value;	
+			
+			<!--A RegExp to remove space, tab, form feed, and line feed from the user input.-->
+			formInput = formInput.replace(/\s+/g, '');	
+			
+			<!--This if-statement validates the form input, making sure the user has input something. In the input is blank a message is displayed prompting the user to add input.-->
+			if (formInput==null || formInput=="") {
+				alert("Please input a URL.");
+				return false;
+			}		
+			else
+			{				
+				<!--CHANGEME: HTTP://EZPROXY.YOURLIB.ORG/LOGIN?URL= The value for the variable proxy_string should contain your EZproxy prefix. -->
+				var proxy_string = "HTTP://EZPROXY.YOURLIB.ORG/LOGIN?URL=";
+				
+				<!--This variable and the if-statement evaluates the user input, formInput, to see if it starts with http or https, and if it does not prepends http:// to it. -->
+				var urlPattern = /^((http|https):\/\/)/;
+				if(!urlPattern.test(formInput)) {
+					formInput = "http://" + formInput;
+				}
+				
+				<!--The following lines of code submit the XML document, with the user's URL, to EZproxy to determine if the URL is proxied.-->
+				
+				<!--CHANGEME: HTTP://EZPROXY.YOURLIB.ORG/proxy_url - You must update the variable proxy_url_location with your institution's EZproxy address. The value must end with /proxy_url - which performs the URL lookup.-->
+				var proxy_url_location = 'HTTP://EZPROXY.YOURLIB.ORG/proxy_url';
+				
+				var method = 'POST';
+					
+				<!--CHANGEME: YOUR_PASSWORD_HERE - Replace YOUR_PASSWORD_HERE below with the same somepassword you used when you added "ProxyURLPassword somepassword" to config.txt. The quote marks must stay in place.-->
+				var postData =
+				  '<?xml version="1.0"?>\n'
+				  + '  <proxy_url_request password="YOUR_PASSWORD_HERE">\n'
+				  + '  <urls>\n'
+				  + '  <url>'+formInput+'</url>\n'
+				  + '  </urls>\n'
+				  + '  </proxy_url_request>\n';
+				var req = new XMLHttpRequest();
+				req.open("POST", proxy_url_location, true);
+				req.setRequestHeader('User-Agent', 'XMLHTTP/1.0');
+				req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+				req.onreadystatechange = function () 
+				{
+					if (req.readyState != 4) return;
+					if (req.status != 200 && req.status != 304) {
+						<!--Alert message shown to users if there is an error with the lookup. A good practice would be to include a contact info for the EZproxy administrator.-->
+						alert('The proxy lookup failed, please contact your EZProxy administrator for assistance. HTTP error ' + req.status);
+						return;
+					}
+					
+					<!--This if-statement below evaluates whether the XML document returned from EZProxy /proxy_url contains true in it, which means the resource is setup for proxy. Otherwise, it contains false, and will be passed to the else statement. -->
+					
+					if(req.responseText.indexOf("true") > -1){
+						var formOutput = proxy_string.concat(formInput);
+						document.getElementById('newURL').innerHTML = formOutput;
+				
+						var trueMessage = "The URL is setup for proxy, you may use the URL shown below.";
+						document.getElementById('message').innerHTML = trueMessage;
+				
+						<!--The setAttribute sets the href for the link that is displayed. -->
+						document.getElementById('link').setAttribute('href',formOutput);
+					}
+					else
+					{
+						var formOutput = "Please contact the EZproxy administrator before using this link with proxy.";
+						document.getElementById('newURL').innerHTML = formOutput;
+							
+						var falseMessage = "The URL is not setup for proxy.";
+						document.getElementById('message').innerHTML = falseMessage;
+						
+						<!--CHANGEME: Update the mailto address EZPROXY-ADMIN@YOURLIB.ORG with the email address for your EZProxy administrator, or whomever maintains EZProxy stanzas. -->
+						var nullURL = "mailto:EZPROXY-ADMIN@YOURLIB.ORG?subject=EZProxy request for " + formInput;
+						document.getElementById('link').setAttribute('href',nullURL);
+					}
+				}
+				if (req.readyState == 4) return;
+				req.send(postData);
+				
+			}
+			
+		}
+	
+	</script>
+		
+</head>
+
+<body>
+
+	<form name="theForm">
+
+		<p>This page will check to see if a URL is setup and ready to use with EZproxy. If the URL is setup correctly the page will return the URL with the proxy prefix prepended to the URL. If it is not setup correctly for proxy a link is provided to email the EZproxy administrator to request the URL's addition to EZProxy.</p> 
+	
+		<input type='text' id='userInput' autofocus="autofocus"/><br>
+		<input type='button' onclick='tranformInput()' value='Check the URL'/>
+		
+		<!--These spans display to the user all the work completed in the javascript.-->
+		<p>
+			<span id='message'></span><br>
+			<a id="link" target="_blank"><span id='newURL'></span></a>
+		</p> 
+		
+	</form>
+	
+</body>
+</html>
