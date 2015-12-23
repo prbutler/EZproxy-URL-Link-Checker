@@ -60,7 +60,7 @@
 					
 					<!--This if-statement below evaluates whether the XML document returned from EZProxy /proxy_url contains true in it, which means the resource is setup for proxy. Otherwise, it contains false, and will be passed to the else statement. -->
 					
-					if(req.responseText.indexOf("true") > -1){
+					if(req.responseText.indexOf("proxy=\"true\"") > -1){
 						var formOutput = proxy_string.concat(formInput);
 						document.getElementById('newURL').innerHTML = formOutput;
 				
