@@ -1,10 +1,12 @@
 ==URL Checker Using ProxyURLPassword==
 
-ProxyURLPassword is an EZproxy feature that allows one to pass EZproxy a structured XML document that contains a URL and a password and EZproxy will return a true or false value based on whether the URL has been setup for proxy in EZproxy. According to the release notes (http://oclc.org/support/services/ezproxy/documentation/changes.en.html) this was developed to support third-party applications, such as LibX. There is little official documentation on this feature, but excellent documentation on how to implement this feature using PHP (http://elibtronic.ca/content/20080821/checking-urls-connecting-ezproxy) and (http://elibtronic.ca/content/20101029/taking-care-campus-users-or-checking-urls-connecting-ezproxy-redux). 
+Version 2.0 released on 2023-10-05
+
+ProxyURLPassword is an EZproxy feature that allows one to pass EZproxy a structured XML document that contains a URL and a password and EZproxy will return a true or false value based on whether the URL has been setup for proxy in EZproxy. There is little official documentation on this feature.
 
 Here I offer a method to implement this feature using HTML and JavaScript. No additional resources are required, and this implementation should work with any release of EZproxy that supports ProxyURLPassword. 
 
-Submitted by Paul Butler, Library Technologies Support Analyst at Ball State University. http://cms.bsu.edu/academics/libraries/about/stafflisting/staffbydepartment/lits/butlerpaul
+Submitted by Paul Butler, Library Technologies Support Analyst at Ball State University. Email me at:  prbutler@bsu.edu
 
 ==The Features==
 In addition to supporting the URL lookup, the code provides some additional features. 
@@ -36,18 +38,20 @@ The custom HTML page offered with this documentation should be located with your
 * Placing the HTML file in /loggedin will force all users to authenticate before accessing the page. The resulting URL would be: HTTP://EZPROXY.YOURLIB.ORG/loggedin/URL_lookup.htm
 
 ==The Code==
-What follows are the variables and their values that need to be changed in URL_lookup.htm for the code to work properly. Searching the code for CHANGEME will help quickly locate these values. If you do not have an HTML editor you can open URL_lookup.htm with any text editor, such as NotePad, to make these changes. 
+What follows are the variables and their values that need to be changed in URL_lookup.htm for the code to work properly. Searching the code for CHANGEME will help quickly locate these values. If you do not have an HTML editor you can open URL_lookup.htm with any text editor, such as NotePad++, to make these changes. 
 
-"PROXY_STRING" - The value for the variable proxy_string should contain your EZProxy prefix in either form, whichever makes sense locally: HTTP://EZPROXY.YOURLIB.ORG/LOGIN?URL= 
+"PROXY_STRING" - The value for the variable proxy_string should contain your EZProxy prefix in either form, whichever makes sense locally: HTTPS://EZPROXY.YOURLIB.ORG/LOGIN?URL= 
 or 
-HTTP://www.EZPROXY.YOURLIB.ORG/LOGIN?URL=
+HTTPS://www.EZPROXY.YOURLIB.ORG/LOGIN?URL=
 
-"PROXY_URL_LOCATION" - The value for the variable proxy_url_location should contain the location your proxy_url page in either form, whichever makes sense locally: HTTP://EZPROXY.YOURLIB.ORG/proxy_url
+"PROXY_URL_LOCATION" - The value for the variable proxy_url_location should contain the location your proxy_url page in either form, whichever makes sense locally: HTTPS://EZPROXY.YOURLIB.ORG/proxy_url
 or 
-HTTP://WWW.EZPROXY.YOURLIB.ORG/proxy_url 
+HTTPS://WWW.EZPROXY.YOURLIB.ORG/proxy_url 
 
 "YOUR_PASSWORD_HERE" - Replace YOUR_PASSWORD_HERE with the same "somepassword" you used in the step above when you added "ProxyURLPassword somepassword" to config.txt. Remember this password will be saved in plain text in the html of this page so do NOT use a password that you use elsewhere. Make the password unique, random, and just used for this purpose. 
 
 "EZPROXY-ADMIN@YOURLIB.ORG" - This value should be replaced with the email address of your EZproxy administrator, or whomever maintains EZProxy stanzas. This will be displayed on the page when the user submits a URL that is not setup for proxy. 
 
-Once the four values above have been updated in the accompanying html file URL_lookup.htm and URL_lookup.htm has been added to EZproxy as outlined in "The Setup" step above you should be able to access the page and start doing URL lookups. 
+"YOUR-PROXY-URL" - This value should be replaced with you proxy prefix. Displaying this vlaue is not necessary, but over the years I have found that displaying this value here is helpful if you need to quickly copy/paste it to assist with testing. 
+
+Once the five values above have been updated in the accompanying html file URL_lookup.htm and URL_lookup.htm has been added to EZproxy as outlined in "The Setup" step above you should be able to access the page and start doing URL lookups. 

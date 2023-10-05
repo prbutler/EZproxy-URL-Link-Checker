@@ -1,9 +1,123 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<title>EZproxy URL Checker</title>
+	<title>EZproxy URL Link Checker</title>
+	<!-- URL_lookup.htm version 2.0-->
+	<!-- Created by Paul Butler - prbutler@bsu.edu-->
+
+	<meta name="description" content="EZproxy URL Link Checker">
+	<meta name="author" content="author-name-here">
 
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+	
+	<!--Needed to make mobile scaling work correctly.-->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<!--Internal mobile-friendly CSS to make this a single page document.-->	
+	<style>
+			
+		body 
+		{ 
+			font: normal 100%;
+			-webkit-text-size-adjust: 100%;
+		}
+
+		#container
+		{
+			text-align: center;
+			margin: 0 auto;
+			padding: .5px 5px 0 5px;
+		}
+
+		.myForm {
+		    line-height: 1.6em;
+			background-color: #eee;
+			padding: 0.6em;
+			border: 1px solid #a30707;
+			margin: 0 auto;
+			max-width: 900px;
+			text-align: center;
+			margin-top: 10px; 
+			padding-top: 0px;
+			font-weight: bold;
+		}
+
+		input[type="text"], input[type="password"] 
+		{
+			font-size: medium;
+			width: 100%;
+		}
+
+		input[type="submit"] 
+		{
+			font-size: 100%;
+			color: white;
+			font-weight: bold;
+			padding: .4em 1em;
+			margin: 0;
+			border: 1.5px solid black;
+			border-radius: 5px;
+			background: #911;
+		}
+		
+		input[type="submit"]:hover
+		{
+			border: 1.5px solid DarkGrey;
+			text-decoration: underline;
+		}
+		
+		input[type="button"] 
+		{
+			font-size: 100%;
+			color: white;
+			font-weight: bold;
+			padding: .4em 1em;
+			margin: 0;
+			border: 1.5px solid black;
+			border-radius: 5px;
+			background: #911;
+			margin-top:10px;
+		}
+		
+		input[type="button"]:hover
+		{
+			border: 1.5px solid DarkGrey;
+			text-decoration: underline;
+		}
+
+		.formfield {
+			margin: 0 0 .4em 0;
+		}
+		
+		textarea
+		{
+			width: 100%;
+		}
+		
+		/*Styling if browser width is less then 950px.*/
+		@media (max-width: 950px) 
+		{
+			body { font-size: 80%; }
+			input[type="text"], input[type="password"] 
+			{
+				font-size: medium;
+				width: 95%;
+			}
+			
+			#container form 
+			{ 
+				width: auto;
+				font-size: 1em;
+			}
+			
+			input[type="submit"] 
+			{
+				font-size: 110%;
+				padding: .2em 3em;
+			}
+			
+		}
+	</style>
 	
 	<script type="text/javascript">
 		function tranformInput() 
@@ -21,23 +135,23 @@
 			}		
 			else
 			{				
-				<!--CHANGEME: HTTP://EZPROXY.YOURLIB.ORG/LOGIN?URL= The value for the variable proxy_string should contain your EZproxy prefix. -->
-				var proxy_string = "HTTP://EZPROXY.YOURLIB.ORG/LOGIN?URL=";
+				<!--CHANGEME: HTTPs://EZPROXY.YOURLIB.ORG/LOGIN?URL= The value for the variable proxy_string should contain your EZProxy prefix. -->
+				var proxy_string = "https://ezproxy.yourlib.org/login?url=";
 				
-				<!--This variable and the if-statement evaluates the user input, formInput, to see if it starts with http or https, and if it does not prepends http:// to it. -->
+				<!--This variable and the if-statement evaluates the user input, formInput, to see if it starts with http or https, and if it does not prepends https:// to it. -->
 				var urlPattern = /^((http|https):\/\/)/;
 				if(!urlPattern.test(formInput)) {
-					formInput = "http://" + formInput;
+					formInput = "https://" + formInput;
 				}
 				
-				<!--The following lines of code submit the XML document, with the user's URL, to EZproxy to determine if the URL is proxied.-->
+				<!--The following lines of code submit the XML document, with the user's URL, to EZProxy to determine if the URL is proxied.-->
 				
-				<!--CHANGEME: HTTP://EZPROXY.YOURLIB.ORG/proxy_url - You must update the variable proxy_url_location with your institution's EZproxy address. The value must end with /proxy_url - which performs the URL lookup.-->
-				var proxy_url_location = 'HTTP://EZPROXY.YOURLIB.ORG/proxy_url';
+				<!--CHANGEME: HTTPS://EZPROXY.YOURLIB.ORG/proxy_url - You must update the variable proxy_url_location with your institution's EZProxy address. The value must end with /proxy_url - which performs the URL lookup.-->
+				var proxy_url_location = 'https://ezproxy.yourlib.org/proxy_url';
 				
 				var method = 'POST';
 					
-				<!--CHANGEME: YOUR_PASSWORD_HERE - Replace YOUR_PASSWORD_HERE below with the same somepassword you used when you added "ProxyURLPassword somepassword" to config.txt. The quote marks must stay in place.-->
+				<!--CHANGEME: YOUR_PASSWORD_HERE - The value for the variable password (YOUR_PASSWORD_HERE) should be changed to match the same value you have in the in config.txt.-->
 				var postData =
 				  '<?xml version="1.0"?>\n'
 				  + '  <proxy_url_request password="YOUR_PASSWORD_HERE">\n'
@@ -53,7 +167,7 @@
 				{
 					if (req.readyState != 4) return;
 					if (req.status != 200 && req.status != 304) {
-						<!--Alert message shown to users if there is an error with the lookup. A good practice would be to include a contact info for the EZproxy administrator.-->
+						<!--Alert message shown to users if there is an error with the lookup. A good practice would be to include a contact info for the EZProxy administrator.-->
 						alert('The proxy lookup failed, please contact your EZProxy administrator for assistance. HTTP error ' + req.status);
 						return;
 					}
@@ -61,6 +175,7 @@
 					<!--This if-statement below evaluates whether the XML document returned from EZProxy /proxy_url contains true in it, which means the resource is setup for proxy. Otherwise, it contains false, and will be passed to the else statement. -->
 					
 					if(req.responseText.indexOf("proxy=\"true\"") > -1){
+						<!-- Commented out, used for testing: alert("The test was TRUE!"); -->
 						var formOutput = proxy_string.concat(formInput);
 						document.getElementById('newURL').innerHTML = formOutput;
 				
@@ -72,7 +187,8 @@
 					}
 					else
 					{
-						var formOutput = "Please contact the EZproxy administrator before using this link with proxy.";
+						<!--Commented out, used for testing: alert("The test was FALSE!"); -->
+						var formOutput = "Please contact the EZProxy administrator before using this link with proxy.";
 						document.getElementById('newURL').innerHTML = formOutput;
 							
 						var falseMessage = "The URL is not setup for proxy.";
@@ -84,10 +200,8 @@
 					}
 				}
 				if (req.readyState == 4) return;
-				req.send(postData);
-				
+				req.send(postData);	
 			}
-			
 		}
 	
 	</script>
@@ -96,20 +210,35 @@
 
 <body>
 
-	<form name="theForm">
+	<div id="container">
+		Your Header Text Goes Here
+	</div>
 
-		<p>This page will check to see if a URL is setup and ready to use with EZproxy. If the URL is setup correctly the page will return the URL with the proxy prefix prepended to the URL. If it is not setup correctly for proxy a link is provided to email the EZproxy administrator to request the URL's addition to EZProxy.</p> 
-	
-		<input type='text' id='userInput' autofocus="autofocus"/><br>
-		<input type='button' onclick='tranformInput()' value='Check the URL'/>
+	<div>
+		<form class="myForm">
+
+			<p>This page will check to see if a URL is setup and ready to use with EZProxy. If the URL is setup correctly the page will return the URL with the proxy prefix prepended to the URL. If it is not setup correctly for proxy a link is provided to email the EZProxy administrator to request the URL's addition to EZProxy.</p> 
 		
-		<!--These spans display to the user all the work completed in the javascript.-->
-		<p>
+			<textarea id="userInput" autofocus="autofocus"></textarea>
+			<br>
+			<input type='button' onclick='tranformInput()' value='Add the EZProxy prefix'/>
+			
+			<br>
 			<span id='message'></span><br>
-			<a id="link" target="_blank"><span id='newURL'></span></a>
-		</p> 
-		
-	</form>
+			<!--This is what displays all the work completed in the javascript to the end user. -->
+			<p><a id="link" target="_blank"><span id='newURL'></span></a></p>
 	
+		</form>
+
+		<div style="text-align: center;">
+			<p>Base EZproxy URL Prefix:<br>
+			<!--CHANGEME: Update YOUR-PROXY-URL to your EZproxy URL. -->
+			https://YOUR-PROXY-URL/login?url=</p>
+			<br>
+			<p>For more info on this page see: <a href="https://github.com/prbutler/EZproxy-URL-Link-Checker" target="_blank"</a>https://github.com/prbutler/EZproxy-URL-Link-Checker</p>
+		<div>
+
+	</div><!-- closes main div-->
+
 </body>
 </html>
